@@ -57,10 +57,11 @@ class OrderObserver implements ObserverInterface
                     $pickuppoint_zip = $quote->getData('pickuppoint_zip');
 
                     foreach ($pickup_methods as $pickup_method) {
-                        if ('pktkppickuppoint_' . $pickup_method->pickup_point_id == $shipping_method_code) {
+                        if ('pktkppickuppoint_' . $pickup_method->pickup_point_id == $shipping_method_code
+                        || 'pktkppickuppoint_rma_' . $pickup_method->pickup_point_id == $shipping_method_code) {
                             $order->setData('pickuppoint_zip', $pickuppoint_zip);
                             $order->setData('pickup_point_provider', $pickup_method->provider);
-                            $order->setData('pickup_point_id', $pickup_method->pickup_point_id);
+                            $order->setData('pickup_point_id', str_replace('_rma_', '_', $pickup_method->pickup_point_id));
                             $order->setData('pickup_point_name', $pickup_method->name);
                             $order->setData('pickup_point_street_address', $pickup_method->street_address);
                             $order->setData('pickup_point_postcode', $pickup_method->postcode);
@@ -77,7 +78,8 @@ class OrderObserver implements ObserverInterface
                 // HOME DELIVERY
                 if ($method == 'pktkphomedelivery') {
                     foreach ($homedelivery_methods as $homedelivery_method) {
-                        if ('pktkphomedelivery_' . $homedelivery_method->shipping_method_code == $shipping_method_code) {
+                        if ('pktkphomedelivery_' . $homedelivery_method->shipping_method_code == $shipping_method_code
+                        || 'pktkphomedelivery_rma_' . $homedelivery_method->shipping_method_code== $shipping_method_code) {
                             $order->setData('home_delivery_service_provider', $homedelivery_method->service_provider);
                             $order->setData('paketikauppa_smc', $homedelivery_method->shipping_method_code);
                             $method_available = true;
